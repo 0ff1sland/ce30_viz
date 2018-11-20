@@ -35,7 +35,7 @@ include_directories(
   "${PROJECT_SOURCE_DIR}"   # to find ce30_pcviz/ce30_pcviz.h
   "${PROJECT_BINARY_DIR}")  # to find ce30_pcviz/config.h
 
-find_package(PCL 1.8.1 REQUIRED)
+find_package(PCL 1.7 REQUIRED)
 # find_package(ce30_driver 1.2.1 REQUIRED)
 find_package(ce30_driver 1.3.0 REQUIRED)
 
