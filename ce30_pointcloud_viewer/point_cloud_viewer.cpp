@@ -46,28 +46,28 @@ PointCloudViewer::~PointCloudViewer() {
 
 ExitCode PointCloudViewer::ConnectOrExit(UDPSocket& socket) {
   if (!Connect(socket)) {
-    cerr << "Unable to Connect Device!" << endl;
+    std::cerr << "Unable to Connect Device!" << std::endl;
     return ExitCode::device_connection_failure;
   }
   string device_version;
   if (!GetVersion(device_version, socket)) {
-    cerr << "Unable to Retrieve CE30 Device Version" << endl;
+	std::cerr << "Unable to Retrieve CE30 Device Version" << std::endl;
     return ExitCode::retrieve_ce30_version_failure;
   }
-  cout << "CE30 Version: " << device_version << endl;
+  std::cout << "CE30 Version: " << device_version << std::endl;
   emit HideGrayImage();
 #ifdef SUPPORT_GRAY_OUTPUT_MODE
   if (!DisableGrayOutput(socket)) {
-    cerr << "Unable to Switch off Gray Output" << endl;
+	  std::cerr << "Unable to Switch off Gray Output" << std::endl;
     return ExitCode::switch_gray_output_failure;
   }
 #endif
   if (!DeviceConfig::Configure(socket)) {
-    cerr << "Failed to Configure CE30" << endl;
+	std::cerr << "Failed to Configure CE30" << std::endl;
     return ExitCode::configure_ce30_failure;
   }
   if (!StartRunning(socket)) {
-    cerr << "Unable to Start CE30" << endl;
+	std::cerr << "Unable to Start CE30" << std::endl;
     return ExitCode::start_ce30_failure;
   }
   return ExitCode::no_exit;
@@ -235,10 +235,10 @@ void PointCloudViewer::PacketReceiveThread() {
             scan.AddColumnsFromPacket(*parsed);
           }
         } else {
-          cerr << "Error parsing package." << endl;
+          std::cerr << "Error parsing package." << std::endl;
         }
-      } else {
-        cerr << "Error getting package." << endl;
+      } else { 
+        std::cerr << "Error getting package." << std::endl;
       }
     }
     unique_lock<mutex> lock(scan_mutex_);
@@ -274,12 +274,12 @@ void PointCloudViewer::OnPCVizInitialized() {
        [this](){
          save_pcd_ = !save_pcd_;
          if (save_pcd_) {
-           cout << "Recording..." << endl;
+		   std::cout << "Recording..." << std::endl;
          } else {
-           cout << "Recording Ended" << endl;
+           std::cout << "Recording Ended" << std::endl;
            static bool prompt = true;
            if (prompt) {
-             cout << "  * Data Have Been Saved Under 'data' Folder" << endl;
+             std::cout << "  - Data Have Been Saved Under 'data' Folder" << std::endl;
              prompt = false;
            }
          }
@@ -312,20 +312,20 @@ void PointCloudViewer::OnPCVizInitialized() {
        [this](){
          StopRunning(*socket_);
          if (!use_filter_) {
-           cout << "Enabling Filter" << endl;
+           std::cout << "Enabling Filter" << std::endl;
            use_filter_ = EnableFilter(*socket_);
            if (use_filter_) {
-             cout << "  * Filter On" << endl;
+             std::cout << "  * Filter On" << std::endl;
            } else {
-             cout << "  * Failed" << endl;
+             std::cout << "  * Failed" << std::endl;
            }
          } else {
-           cout << "Disabling Filter" << endl;
+           std::cout << "Disabling Filter" << std::endl;
            use_filter_ = !DisableFilter(*socket_);
            if (!use_filter_) {
-             cout << "  * Filter Off" << endl;
+             std::cout << "  * Filter Off" << std::endl;
            } else {
-             cout << "  * Failed" << endl;
+             std::cout << "  * Failed" << std::endl;
            }
          }
          StartRunning(*socket_);
